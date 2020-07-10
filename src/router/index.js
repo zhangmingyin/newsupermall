@@ -16,19 +16,19 @@ const routes=[
   },
   {
     path:'/home',
-    component: 'Home'
+    component: Home
   },
   {
     path:'/category',
-    component: 'Category'
+    component: Category
   },
   {
     path:'/cart',
-    component: 'Cart'
+    component: Cart
   },
   {
     path:'/profile',
-    component: 'Profile'
+    component: Profile
   },
 ]
 
