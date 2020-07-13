@@ -1,70 +1,22 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物车</div></nav-bar>
-    <home-swiper :banners="banners"></home-swiper>
-    <recommend :recommends="recommends"></recommend>
-    <feature-view></feature-view>
-    <tab-control class="tab-control" @tabclick="tabClick" :titles="['流行','新款','精选']"></tab-control>
+    <scroll class="scroll-content"
+            ref="scroll" 
+            @scroll="contentScroll" 
+            :probeType="3" 
+            :pull-up-load="true" @pullingup="pullingUp">
+      <home-swiper :banners="banners"></home-swiper>
+      <recommend :recommends="recommends"></recommend>
+      <feature-view></feature-view>
+      <tab-control class="tab-control" @tabclick="tabClick" :titles="['流行','新款','精选']"></tab-control>
+      
+      <GoodsList class="goods-list" :goods="showGoods"/>
+    </scroll>
+
+    <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
     
-    <GoodsList class="goods-list" :goods="showGoods"/>
-    <ul>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-       <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-       <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-       <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-       <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-    </ul>
-  </div>
+  </div>   
 </template>
 
 <script>
@@ -75,6 +27,8 @@ import FeatureView from './childComps/FeatureView'
 import NavBar from 'components/common/navbar/NavBar'
 import TabControl from 'components/content/tabControl/TabControl'
 import GoodsList from 'components/content/goods/GoodsList'
+import Scroll from 'components/common/scroll/Scroll'
+import BackTop from 'components/content/backTop/BackTop'
 
 import {getHomeMultiData,getHomeGoods} from 'network/home'
   export default {
@@ -88,7 +42,8 @@ import {getHomeMultiData,getHomeGoods} from 'network/home'
           'new':{page:0,list:[]},
           'sell':{page:0,list:[]}
         },
-        currenType:'pop'
+        currenType:'pop',
+        isShowBackTop:false
       }
     },
     components:{ 
@@ -97,7 +52,9 @@ import {getHomeMultiData,getHomeGoods} from 'network/home'
       FeatureView,
       NavBar,
       TabControl,
-      GoodsList
+      GoodsList,
+      Scroll,
+      BackTop
     },
     created(){
       this.getHomeMultiData();
@@ -118,7 +75,8 @@ import {getHomeMultiData,getHomeGoods} from 'network/home'
         getHomeGoods(type,page).then(res=>{
           console.log(res)
           this.goods[type].list.push(...res.data.list);
-          this.goods[type].page+=1
+          this.goods[type].page+=1;
+          this.$refs.scroll.finishPullUp();
         })
       },
       tabClick(index){
@@ -133,6 +91,17 @@ import {getHomeMultiData,getHomeGoods} from 'network/home'
             this.currenType='sell';
             break;
         }
+      },
+      backClick(){
+        this.$refs.scroll.scrollTo(0,0,400)
+      },
+      contentScroll(position){
+        // console.log(position)
+        this.isShowBackTop= (-position.y) > 1000
+      },
+      pullingUp(){
+        this.getHomeGoods(this.currenType);
+        this.$refs.scroll.refresh();
       }
     },
      computed:{
@@ -145,7 +114,9 @@ import {getHomeMultiData,getHomeGoods} from 'network/home'
 
 <style scoped>
   #home{
-      padding-top: 44px;
+      /* padding-top: 44px; */
+      height: 100vh;
+      position: relative;
   }
   .tab-control{
     position: sticky;
@@ -168,4 +139,17 @@ import {getHomeMultiData,getHomeGoods} from 'network/home'
     justify-content: space-around;
     padding: 2px;
   }
+  .scroll-content{
+    position: absolute;
+    overflow: hidden;
+    top: 44px;
+    bottom: 49px;
+    left: 0;
+    right: 0;
+  }
+  /* .scroll-content{
+    height: calc(100% - 93px);
+    overflow: hidden;
+    margin-top: 44px;
+  } */
 </style>
