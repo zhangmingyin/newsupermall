@@ -62,6 +62,11 @@ import {getHomeMultiData,getHomeGoods} from 'network/home'
       this.getHomeGoods('pop');
       this.getHomeGoods('new');
       this.getHomeGoods('sell');
+
+      this.$bus.$on('onImageLoad',()=>{
+        // console.log('监听图片加载')
+        this.$refs.scroll && this.$refs.scroll.refresh();
+      })
     },
     methods:{
       getHomeMultiData(){
@@ -73,7 +78,7 @@ import {getHomeMultiData,getHomeGoods} from 'network/home'
       getHomeGoods(type){
         const page=this.goods[type].page+1;
         getHomeGoods(type,page).then(res=>{
-          console.log(res)
+          // console.log(res)
           this.goods[type].list.push(...res.data.list);
           this.goods[type].page+=1;
           this.$refs.scroll.finishPullUp();
@@ -101,7 +106,7 @@ import {getHomeMultiData,getHomeGoods} from 'network/home'
       },
       pullingUp(){
         this.getHomeGoods(this.currenType);
-        this.$refs.scroll.refresh();
+      
       }
     },
      computed:{

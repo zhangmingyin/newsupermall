@@ -43,13 +43,13 @@
   },
   methods: {
     scrollTo(x,y,time){
-      this.scroll.scrollTo(x,y,time)
+     this.scroll && this.scroll.scrollTo(x,y,time)
     },
     finishPullUp(){
-      this.scroll.finishPullUp();
+     this.scroll && this.scroll.finishPullUp();
     },
     refresh(){
-      this.scroll.refresh();
+     this.scroll && this.scroll.refresh();
     }
   },
  }
