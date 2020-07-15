@@ -1,15 +1,16 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物车</div></nav-bar>
+    <tab-control ref="tabcontrol1" class="tab-control" v-show="isbackFiexd" @tabclick="tabClick" :titles="['流行','新款','精选']"></tab-control>
     <scroll class="scroll-content"
             ref="scroll" 
             @scroll="contentScroll" 
             :probeType="3" 
             :pull-up-load="true" @pullingup="pullingUp">
-      <home-swiper :banners="banners"></home-swiper>
+      <home-swiper :banners="banners" @swiperImageLoad="swiperImageLoad"></home-swiper>
       <recommend :recommends="recommends"></recommend>
       <feature-view></feature-view>
-      <tab-control class="tab-control" @tabclick="tabClick" :titles="['流行','新款','精选']"></tab-control>
+      <tab-control ref="tabcontrol2" @tabclick="tabClick" :titles="['流行','新款','精选']"></tab-control>
       
       <GoodsList class="goods-list" :goods="showGoods"/>
     </scroll>
@@ -31,6 +32,7 @@ import Scroll from 'components/common/scroll/Scroll'
 import BackTop from 'components/content/backTop/BackTop'
 
 import {getHomeMultiData,getHomeGoods} from 'network/home'
+import {debounce} from 'common/utils'
   export default {
     name: "Home",
     data(){
@@ -43,7 +45,10 @@ import {getHomeMultiData,getHomeGoods} from 'network/home'
           'sell':{page:0,list:[]}
         },
         currenType:'pop',
-        isShowBackTop:false
+        isShowBackTop:false,
+        tabOffset:0,
+        isbackFiexd:false,
+        saveY:0
       }
     },
     components:{ 
@@ -62,19 +67,40 @@ import {getHomeMultiData,getHomeGoods} from 'network/home'
       this.getHomeGoods('pop');
       this.getHomeGoods('new');
       this.getHomeGoods('sell');
-
-      this.$bus.$on('onImageLoad',()=>{
-        // console.log('监听图片加载')
-        this.$refs.scroll && this.$refs.scroll.refresh();
-      })
+    },
+    mounted(){
+      //监听图片进行防抖处理
+      const refresh=debounce(this.$refs.scroll && this.$refs.scroll.refresh,200)
+      this.$bus.$on('onImageLoad',()=>{   
+        refresh();
+      });
+      
+    },
+    activated(){
+      // console.log('进入');
+      this.$refs.scroll.refresh()
+      this.$refs.scroll.scrollTo(0,this.saveY);
+      
+    },
+    deactivated(){
+      // console.log('离开');
+      this.saveY=this.$refs.scroll.getSaveY()
+      
     },
     methods:{
+      //接收轮播图中发出的监听图片事件
+      swiperImageLoad(){
+        this.tabOffset=this.$refs.tabcontrol2.$el.offsetTop;
+        // console.log(this.tabOffset)
+      },
+      //首页多个数据
       getHomeMultiData(){
         getHomeMultiData().then(res=>{
           this.banners=res.data.banner.list;
           this.recommends=res.data.recommend.list;
         })
       },
+      //首页商品
       getHomeGoods(type){
         const page=this.goods[type].page+1;
         getHomeGoods(type,page).then(res=>{
@@ -84,6 +110,7 @@ import {getHomeMultiData,getHomeGoods} from 'network/home'
           this.$refs.scroll.finishPullUp();
         })
       },
+      //点击切换商品类型
       tabClick(index){
         switch(index){
           case 0:
@@ -95,15 +122,23 @@ import {getHomeMultiData,getHomeGoods} from 'network/home'
           case 2:
             this.currenType='sell';
             break;
-        }
+        };
+        this.$refs.tabcontrol1.currentIndex=index;
+        this.$refs.tabcontrol2.currentIndex=index;
       },
+      //点击图标回到顶部
       backClick(){
         this.$refs.scroll.scrollTo(0,0,400)
       },
+      //图标的滚动显示和隐藏
       contentScroll(position){
         // console.log(position)
-        this.isShowBackTop= (-position.y) > 1000
+        //backtop的显示和隐藏
+        this.isShowBackTop= (-position.y) > 1000;
+        //tabcontrol的显示和隐藏
+        this.isbackFiexd=(-position.y) > this.tabOffset
       },
+      //商品上拉加载更多
       pullingUp(){
         this.getHomeGoods(this.currenType);
       
@@ -123,20 +158,20 @@ import {getHomeMultiData,getHomeGoods} from 'network/home'
       height: 100vh;
       position: relative;
   }
-  .tab-control{
+  /* .tab-control{
     position: sticky;
     top:44px;
     z-index: 9;
-  }
+  } */
   .home-nav{
     background-color: var(--color-tint);
     color: #fff;
     text-align: center;
-    position: fixed;
+    /* position: fixed;
     z-index: 9;
     left: 0;
     top: 0;
-    right: 0;
+    right: 0; */
   }
   .goods-list{
     display:flex;
@@ -152,6 +187,16 @@ import {getHomeMultiData,getHomeGoods} from 'network/home'
     left: 0;
     right: 0;
   }
+  .tab-control{
+    position: relative;
+    z-index: 9;
+  }
+  /* .fixed{
+    position: fixed;
+    top: 44px;
+    left: 0;
+    right: 0;
+  } */
   /* .scroll-content{
     height: calc(100% - 93px);
     overflow: hidden;
