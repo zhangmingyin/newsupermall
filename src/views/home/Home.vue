@@ -79,7 +79,7 @@ import {debounce} from 'common/utils'
     activated(){
       // console.log('进入');
       this.$refs.scroll.refresh()
-      this.$refs.scroll.scrollTo(0,this.saveY);
+      this.$refs.scroll.scrollTo(0,this.saveY,0);
       
     },
     deactivated(){
