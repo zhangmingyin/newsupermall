@@ -2,7 +2,7 @@
   <swiper>
     <swiper-item v-for="item in topImages" :key="item.index" class="imgHeight">
       <img :src="item" alt="" />
-    </swiper-item>>
+    </swiper-item>
   </swiper>
 </template>
 

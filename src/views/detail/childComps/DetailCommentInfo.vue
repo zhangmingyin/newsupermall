@@ -14,7 +14,7 @@
       <div class="info-detail">
         <p>{{commentInfo.content}}</p>
         <div class="info-other">
-          <span class="date">{{commentInfo.created}}</span>
+          <span class="date">{{commentInfo.created |showDate}}</span>
           <span>{{commentInfo.style}}</span>
         </div>
         <div class="info-imgs">
@@ -38,6 +38,12 @@
 
           }
         }
+      }
+    },
+    filters:{
+      showDate(value){
+        const data=new Date(value * 1000);
+        return formatDate(data,'yyyy-MM-dd hh:mm:ss')
       }
     },
     methods:{

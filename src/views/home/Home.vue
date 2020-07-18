@@ -12,7 +12,7 @@
       <feature-view></feature-view>
       <tab-control ref="tabcontrol2" @tabclick="tabClick" :titles="['流行','新款','精选']"></tab-control>
       
-      <GoodsList class="goods-list" :goods="showGoods"/>
+      <Goods-list class="goods-list" :goods="showGoods"/>
     </scroll>
 
     <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
@@ -33,6 +33,7 @@ import BackTop from 'components/content/backTop/BackTop'
 
 import {getHomeMultiData,getHomeGoods} from 'network/home'
 import {debounce} from 'common/utils'
+import {itemListenerMixin} from 'common/mixin'
   export default {
     name: "Home",
     data(){
@@ -61,6 +62,7 @@ import {debounce} from 'common/utils'
       Scroll,
       BackTop
     },
+    mixins:[itemListenerMixin],
     created(){
       this.getHomeMultiData();
       //请求商品goods列表数据
@@ -69,12 +71,7 @@ import {debounce} from 'common/utils'
       this.getHomeGoods('sell');
     },
     mounted(){
-      //监听图片进行防抖处理
-      const refresh=debounce(this.$refs.scroll && this.$refs.scroll.refresh,200)
-      this.$bus.$on('onImageLoad',()=>{   
-        refresh();
-      });
-      
+      //监听图片进行防抖处理  
     },
     activated(){
       // console.log('进入');
@@ -85,7 +82,8 @@ import {debounce} from 'common/utils'
     deactivated(){
       // console.log('离开');
       this.saveY=this.$refs.scroll.getSaveY()
-      
+      this.$bus.$off('onImageLoad',this.itemImgListener)
+      // console.log('离开首页')
     },
     methods:{
       //接收轮播图中发出的监听图片事件

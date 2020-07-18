@@ -1,6 +1,6 @@
 <template>
  <div class="goods-item" @click="itemClick">
-    <img :src="goodsItem.show.img" @load="imageLoad"/>
+    <img :src="showImg" @load="imageLoad"/>
     <div class="goods-info">
        <p>{{goodsItem.title}}</p>
       <span class="price">{{goodsItem.price}}</span>
@@ -25,6 +25,12 @@
 
    }
   },
+  computed:{
+    showImg(){
+      return this.goodsItem.image || this.goodsItem.show.img
+
+    }
+  },
   components: {
 
   },
@@ -33,7 +39,9 @@
       this.$bus.$emit('onImageLoad')
     },
     itemClick(){
-      this.$router.push('/detail/'+this.goodsItem.iid)
+      //首页商品数据点击跳转  
+      if(this.goodsItem.iid)
+        this.$router.push('/detail/'+this.goodsItem.iid) 
     }
   }
  }

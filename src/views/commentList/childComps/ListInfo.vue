@@ -9,7 +9,7 @@
       <div class="info-detail">
         <p>{{itemInfo.content}}</p>
         <div class="info-other">
-          <span class="date">{{itemInfo.created}}</span>
+          <span class="date">{{itemInfo.created | showDate}}</span>
           <span>{{itemInfo.style}}</span>
         </div>
         <div class="info-imgs">
@@ -26,7 +26,7 @@
       <div class="info-detail">
         <p>{{itemInfo.content}}</p>
         <div class="info-other">
-          <span class="date">{{itemInfo.created}}</span>
+          <span class="date">{{itemInfo.created | showDate}}</span>
           <span>{{itemInfo.style}}</span>
         </div>
         <div class="info-imgs">
@@ -43,7 +43,7 @@
       <div class="info-detail">
         <p>{{itemInfo.content}}</p>
         <div class="info-other">
-          <span class="date">{{itemInfo.created}}</span>
+          <span class="date">{{itemInfo.created | showDate}}</span>
           <span>{{itemInfo.style}}</span>
         </div>
         <div class="info-imgs">
@@ -60,7 +60,7 @@
       <div class="info-detail">
         <p>{{itemInfo.content}}</p>
         <div class="info-other">
-          <span class="date">{{itemInfo.created}}</span>
+          <span class="date">{{itemInfo.created | showDate}}</span>
           <span>{{itemInfo.style}}</span>
         </div>
         <div class="info-imgs">
@@ -77,7 +77,7 @@
       <div class="info-detail">
         <p>{{itemInfo.content}}</p>
         <div class="info-other">
-          <span class="date">{{itemInfo.created}}</span>
+          <span class="date">{{itemInfo.created | showDate}}</span>
           <span>{{itemInfo.style}}</span>
         </div>
         <div class="info-imgs">
@@ -90,6 +90,7 @@
 </template>
 
 <script>
+import {formatDate} from 'common/utils'
  export default {
   name: '',
   props:{
@@ -107,6 +108,12 @@
   },
   components: {
 
+  },
+  filters:{
+    showDate(value){
+      const data=new Date(value * 1000);
+      return formatDate(data,'yyyy-MM-dd hh:mm:ss')
+    }
   }
  }
 </script>

@@ -32,13 +32,13 @@ import NavBar from 'components/common/navbar/NavBar'
   },
   mounted(){
      this.iid=this.$route.params.iid;
-     console.log(this.iid);
+    //  console.log(this.iid);
      getDetail(this.iid).then(res=>{
-       console.log(res)
+      //  console.log(res)
        const data=res.result;
         if(data.rate.cRate!==0){
         this.commentInfo=data.rate.list;
-        console.log(this.commentInfo)
+        // console.log(this.commentInfo)
       }
      })
     
