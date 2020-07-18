@@ -1,5 +1,106 @@
 <template>
-  <h2>分类</h2>
+  <ul>
+    <li>风雷1</li>
+    <li>风雷2</li>
+    <li>风雷3</li>
+    <li>风雷4</li>
+    <li>风雷5</li>
+    <li>风雷6</li>
+    <li>风雷7</li>
+    <li>风雷8</li>
+    <li>风雷9</li>
+    <li>风雷10</li>
+    <li>风雷11</li>
+    <li>风雷12</li>
+    <li>风雷13</li>
+    <li>风雷14</li>
+    <li>风雷15</li>
+    <li>风雷16</li>
+    <li>风雷17</li>
+    <li>风雷18</li>
+    <li>风雷19</li>
+    <li>风雷20</li>
+    <li>风雷21</li>
+    <li>风雷22</li>
+    <li>风雷23</li>
+    <li>风雷24</li>
+    <li>风雷25</li>
+    <li>风雷26</li>
+    <li>风雷27</li>
+    <li>风雷28</li>
+    <li>风雷29</li>
+    <li>风雷30</li>
+    <li>风雷31</li>
+    <li>风雷32</li>
+    <li>风雷33</li>
+    <li>风雷34</li>
+    <li>风雷35</li>
+    <li>风雷36</li>
+    <li>风雷37</li>
+    <li>风雷38</li>
+    <li>风雷39</li>
+    <li>风雷40</li>
+    <li>风雷41</li>
+    <li>风雷42</li>
+    <li>风雷43</li>
+    <li>风雷44</li>
+    <li>风雷45</li>
+    <li>风雷46</li>
+    <li>风雷47</li>
+    <li>风雷48</li>
+    <li>风雷49</li>
+    <li>风雷50</li>
+    <li>风雷51</li>
+    <li>风雷52</li>
+    <li>风雷53</li>
+    <li>风雷54</li>
+    <li>风雷55</li>
+    <li>风雷56</li>
+    <li>风雷57</li>
+    <li>风雷58</li>
+    <li>风雷59</li>
+    <li>风雷60</li>
+    <li>风雷61</li>
+    <li>风雷62</li>
+    <li>风雷63</li>
+    <li>风雷64</li>
+    <li>风雷65</li>
+    <li>风雷66</li>
+    <li>风雷67</li>
+    <li>风雷68</li>
+    <li>风雷69</li>
+    <li>风雷70</li>
+    <li>风雷71</li>
+    <li>风雷72</li>
+    <li>风雷73</li>
+    <li>风雷74</li>
+    <li>风雷75</li>
+    <li>风雷76</li>
+    <li>风雷77</li>
+    <li>风雷78</li>
+    <li>风雷79</li>
+    <li>风雷80</li>
+    <li>风雷81</li>
+    <li>风雷82</li>
+    <li>风雷83</li>
+    <li>风雷84</li>
+    <li>风雷85</li>
+    <li>风雷86</li>
+    <li>风雷87</li>
+    <li>风雷88</li>
+    <li>风雷89</li>
+    <li>风雷90</li>
+    <li>风雷91</li>
+    <li>风雷92</li>
+    <li>风雷93</li>
+    <li>风雷94</li>
+    <li>风雷95</li>
+    <li>风雷96</li>
+    <li>风雷97</li>
+    <li>风雷98</li>
+    <li>风雷99</li>
+    <li>风雷100</li>
+  </ul>
 </template>
 
 <script>
@@ -9,5 +110,9 @@
 </script>
 
 <style scoped>
-
+ul{
+  height: 300px;
+  background: #f00;
+  overflow-y:scroll
+}
 </style>

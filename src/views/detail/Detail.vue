@@ -7,6 +7,8 @@
     <detail-shop-info :shop="shop"></detail-shop-info>
     <detail-goods-info :detail-info="detailInfo" @imageLoad='imageLoad'></detail-goods-info>
     <detail-param-info :paramInfo="paramInfo"></detail-param-info>
+    <detail-comment-info :comment-info="commentInfo" @clickComment='clickComment'></detail-comment-info>
+    
    </scroll>
  </div>
 </template>
@@ -18,6 +20,8 @@ import DetailBaseInfo from './childComps/DetailBaseInfo'
 import DetailShopInfo from './childComps/DetailShopInfo'
 import DetailGoodsInfo from './childComps/DetailGoodsInfo'
 import DetailParamInfo from './childComps/DetailParamInfo'
+import DetailCommentInfo from './childComps/DetailCommentInfo'
+
 
 import Scroll from 'components/common/scroll/Scroll'
 import {debounce} from 'common/utils'
@@ -32,21 +36,25 @@ import {getDetail, Goods,Shop,GoodsParam} from 'network/detail'
      goods:{},
      shop:{},
      detailInfo:{},
-     paramInfo:{}
+     paramInfo:{},
+     commentInfo:{}
    }
   },
   mounted(){
     this.iid=this.$route.params.iid;
     
     getDetail(this.iid).then(res=>{
-      console.log(res)
+      // console.log(res)
       const data=res.result;
       this.topImages=res.result.itemInfo.topImages
       // console.log(this.topImages)
       this.goods=new Goods(data.itemInfo,data.columns,data.shopInfo.services);
       this.shop=new Shop(data.shopInfo);
       this.detailInfo=data.detailInfo;
-      this.paramInfo=new GoodsParam(data.itemParams.info,data.itemParams.rule)
+      this.paramInfo=new GoodsParam(data.itemParams.info,data.itemParams.rule);
+      if(data.rate.cRate!==0){
+        this.commentInfo=data.rate.list[0]
+      }
     });
    
   },
@@ -54,6 +62,10 @@ import {getDetail, Goods,Shop,GoodsParam} from 'network/detail'
     imageLoad(){
       const refresh=debounce(this.$refs.scroll && this.$refs.scroll.refresh,200);
       refresh();
+    },
+    clickComment(){
+      console.log(this.iid)
+      this.$router.push('/CommentList/'+this.iid)
     }
   },
   components: {
@@ -63,6 +75,8 @@ import {getDetail, Goods,Shop,GoodsParam} from 'network/detail'
     DetailShopInfo,
     DetailGoodsInfo,
     DetailParamInfo,
+    DetailCommentInfo,
+    
     Scroll
   }
  }
