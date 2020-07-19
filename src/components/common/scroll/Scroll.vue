@@ -49,7 +49,7 @@
      this.scroll && this.scroll.finishPullUp();
     },
     refresh(){
-     console.log('监听图片加载')
+    //  console.log('监听图片加载')
      this.scroll && this.scroll.refresh();
     },
     getSaveY(){

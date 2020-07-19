@@ -9,6 +9,7 @@
       v-for="(item,index) in titles" 
       :key="index" 
       class="nav-item" 
+      
       @click="itemIndex(index)" 
       :class="{active:currentIndex===index}">{{item}}</div>  
     </div>  
@@ -31,7 +32,8 @@ import NavBar from 'components/common/navbar/NavBar'
   },
   methods:{
     itemIndex(index){
-      this.currentIndex=index
+      this.currentIndex=index;
+      this.$emit('titleClick',index)
     },
     back(){
       this.$router.go(-1)
