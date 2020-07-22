@@ -2,9 +2,7 @@
  <div id="detail">
    <detail-nva-bar class="detail-nav" @titleClick="titleClick" ref="navbar"></detail-nva-bar>
    <scroll class="content" ref="scroll" :probe-type="3" @scroll="scroll">
-     <ul>
-     <li v-for="item in $store.state.cartList" :key="item.iid">{{item}}</li>
-   </ul>
+     
      <detail-swiper :top-images="topImages"></detail-swiper>
     <detail-base-info :goods="goods"></detail-base-info>
     <detail-shop-info :shop="shop"></detail-shop-info>
@@ -14,7 +12,8 @@
     <goods-list ref="recommend" class="list-item" :goods="recommend"></goods-list>
    </scroll>
    <detail-bottom-bar @addToCart="addCart"></detail-bottom-bar>
-    <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
+   <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
+   <!-- <toast :message="message" :show="show"></toast> -->
  </div>
 </template>
 
@@ -29,6 +28,7 @@ import DetailCommentInfo from './childComps/DetailCommentInfo'
 import GoodsList from 'components/content/goods/GoodsList'
 import DetailBottomBar from './childComps/DetailBottomBar'
 import BackTop from 'components/content/backTop/BackTop'
+// import Toast from 'components/common/toast/Toast'
 
 
 import Scroll from 'components/common/scroll/Scroll'
@@ -36,6 +36,8 @@ import {debounce} from 'common/utils'
 import {itemListenerMixin} from 'common/mixin'
 
 import {getDetail, Goods,Shop,GoodsParam,getRecommend} from 'network/detail'
+
+import {mapActions} from 'vuex'
  export default {
   name: 'Detail',
   data () {
@@ -52,8 +54,27 @@ import {getDetail, Goods,Shop,GoodsParam,getRecommend} from 'network/detail'
      themeTopY:[],
      themeImage:null,
      currentIndex:0,
-     isShowBackTop:false
+     isShowBackTop:false,
+     
+    //  message:'',
+    //  show:false
    }
+  },
+    components: {
+    DetailNvaBar,
+    DetailSwiper,
+    DetailBaseInfo,
+    DetailShopInfo,
+    DetailGoodsInfo,
+    DetailParamInfo,
+    DetailCommentInfo,
+    DetailBottomBar,
+    BackTop,
+    GoodsList,
+    toast:null,
+    // Toast,
+    
+    Scroll
   },
   mixins:[itemListenerMixin],
   created(){
@@ -90,6 +111,7 @@ import {getDetail, Goods,Shop,GoodsParam,getRecommend} from 'network/detail'
         this.themeTopY.push(this.$refs.params.$el.offsetTop-49)
         this.themeTopY.push(this.$refs.comment.$el.offsetTop-49)
         this.themeTopY.push(this.$refs.recommend.$el.offsetTop-49);
+        
         // console.log(this.themeTopY)
     },100)
   },
@@ -102,6 +124,7 @@ import {getDetail, Goods,Shop,GoodsParam,getRecommend} from 'network/detail'
     // console.log("destroyed")
   },
   methods:{
+    ...mapActions(['addCart']),
      //点击图标回到顶部
     backClick(){
       this.$refs.scroll.scrollTo(0,0,400)
@@ -137,27 +160,21 @@ import {getDetail, Goods,Shop,GoodsParam,getRecommend} from 'network/detail'
     addCart(){
       const product={};
       product.image=this.topImages[0];
-      product.price=this.goods.newPrice;
+      product.price=this.goods.hprice;
       product.title=this.goods.title;
       product.desc=this.goods.desc;
       product.iid=this.iid;
-      this.$store.commit("addCart",product)
+      // this.addCart(product).then(res=>{
+      //   console.log(res)
+      // })
+      this.$store.dispatch("addCart",product).then(res=>{
+        this.$toast.show(res,2000)
+      
+      })
     }
-  },
-  components: {
-    DetailNvaBar,
-    DetailSwiper,
-    DetailBaseInfo,
-    DetailShopInfo,
-    DetailGoodsInfo,
-    DetailParamInfo,
-    DetailCommentInfo,
-    DetailBottomBar,
-    BackTop,
-    GoodsList,
     
-    Scroll
   }
+
  }
 </script>
 
