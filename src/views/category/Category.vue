@@ -1,118 +1,149 @@
 <template>
-  <ul>
-    <li>风雷1</li>
-    <li>风雷2</li>
-    <li>风雷3</li>
-    <li>风雷4</li>
-    <li>风雷5</li>
-    <li>风雷6</li>
-    <li>风雷7</li>
-    <li>风雷8</li>
-    <li>风雷9</li>
-    <li>风雷10</li>
-    <li>风雷11</li>
-    <li>风雷12</li>
-    <li>风雷13</li>
-    <li>风雷14</li>
-    <li>风雷15</li>
-    <li>风雷16</li>
-    <li>风雷17</li>
-    <li>风雷18</li>
-    <li>风雷19</li>
-    <li>风雷20</li>
-    <li>风雷21</li>
-    <li>风雷22</li>
-    <li>风雷23</li>
-    <li>风雷24</li>
-    <li>风雷25</li>
-    <li>风雷26</li>
-    <li>风雷27</li>
-    <li>风雷28</li>
-    <li>风雷29</li>
-    <li>风雷30</li>
-    <li>风雷31</li>
-    <li>风雷32</li>
-    <li>风雷33</li>
-    <li>风雷34</li>
-    <li>风雷35</li>
-    <li>风雷36</li>
-    <li>风雷37</li>
-    <li>风雷38</li>
-    <li>风雷39</li>
-    <li>风雷40</li>
-    <li>风雷41</li>
-    <li>风雷42</li>
-    <li>风雷43</li>
-    <li>风雷44</li>
-    <li>风雷45</li>
-    <li>风雷46</li>
-    <li>风雷47</li>
-    <li>风雷48</li>
-    <li>风雷49</li>
-    <li>风雷50</li>
-    <li>风雷51</li>
-    <li>风雷52</li>
-    <li>风雷53</li>
-    <li>风雷54</li>
-    <li>风雷55</li>
-    <li>风雷56</li>
-    <li>风雷57</li>
-    <li>风雷58</li>
-    <li>风雷59</li>
-    <li>风雷60</li>
-    <li>风雷61</li>
-    <li>风雷62</li>
-    <li>风雷63</li>
-    <li>风雷64</li>
-    <li>风雷65</li>
-    <li>风雷66</li>
-    <li>风雷67</li>
-    <li>风雷68</li>
-    <li>风雷69</li>
-    <li>风雷70</li>
-    <li>风雷71</li>
-    <li>风雷72</li>
-    <li>风雷73</li>
-    <li>风雷74</li>
-    <li>风雷75</li>
-    <li>风雷76</li>
-    <li>风雷77</li>
-    <li>风雷78</li>
-    <li>风雷79</li>
-    <li>风雷80</li>
-    <li>风雷81</li>
-    <li>风雷82</li>
-    <li>风雷83</li>
-    <li>风雷84</li>
-    <li>风雷85</li>
-    <li>风雷86</li>
-    <li>风雷87</li>
-    <li>风雷88</li>
-    <li>风雷89</li>
-    <li>风雷90</li>
-    <li>风雷91</li>
-    <li>风雷92</li>
-    <li>风雷93</li>
-    <li>风雷94</li>
-    <li>风雷95</li>
-    <li>风雷96</li>
-    <li>风雷97</li>
-    <li>风雷98</li>
-    <li>风雷99</li>
-    <li>风雷100</li>
-  </ul>
+  <div id="category">
+    <nav-bar class="nav-bar"><div slot="center">商品分类</div></nav-bar>
+    <div class="content">
+      <left-info :left-info="categorys" @selectItem="selectItem"></left-info>
+      <scroll class="wrapper" ref="scroll">
+        <tab-content-category :subcategories="showSubcategory"></tab-content-category>
+        <tab-control 
+        class="tab-control" 
+        :titles="['综合','新品','销量']" @tabclick="tabclick"></tab-control>
+        <goods-list></goods-list>
+      </scroll>
+    </div>
+    
+  </div>
 </template>
 
 <script>
+  import NavBar from 'components/common/navbar/NavBar' 
+  import LeftInfo from './childComps/LeftInfo'
+  import TabContentCategory from './childComps/TabContentCategory'
+  import TabControl from 'components/content/tabControl/TabControl'
+  import GoodsList from 'components/content/goods/GoodsList'
+
+  import Scroll from 'components/common/scroll/Scroll'
+  import {getCategory,getSubcategory,getCategoryDetail} from 'network/category'
   export default {
-    name: "Category"
+    name: "Category",
+    components:{
+      NavBar,
+      LeftInfo,
+      TabContentCategory,
+      TabControl,
+      GoodsList,
+      Scroll
+    },
+    data(){
+      return {
+        categorys:[],
+        currentIndex:-1,
+        categoryData: {},
+        currentType:'pop'
+        // subcategories:{}
+        
+      }
+    },
+    created() {
+      this._getCategory()
+      this.$bus.$on('imgLoad',()=>{
+        this.$refs.scroll.refresh()
+      })
+    },
+    computed:{
+      showSubcategory() {
+		    if (this.currentIndex === -1) return {}
+        return this.categoryData[this.currentIndex].subcategories
+      },
+    },
+    methods:{
+      _getCategory(){
+        getCategory().then(res=>{
+          this.categorys=res.data.category.list;
+          for(let i=0;i<this.categorys.length;i++){
+            this.categoryData[i]={
+               subcategories:{},
+               categoryDetail: {
+                'pop': [],
+                'new': [],
+                'sell': []
+              }
+            }
+          }
+          console.log(res)
+          this._getSubcategory(0)
+        })    
+      },
+      _getSubcategory(index){
+        this.currentIndex=index
+        // console.log(this.currentIndex)
+        const maitKey=this.categorys[index].maitKey
+        // console.log(maitKey)
+        getSubcategory(maitKey).then(res=>{
+          this.categoryData[index].subcategories=res.data
+          this.categoryData = {...this.categoryData}
+          console.log( this.categoryData)
+          this._getCategoryDetail('pop')
+          // this._getSubcategory('new')
+          // this._getSubcategory('sell')
+        })
+      },
+      _getCategoryDetail(type){
+        const miniWallkey=this.categorys[this.currentIndex].miniWallkey
+        getCategoryDetail(miniWallkey, type).then(res=>{
+          this.categoryDetail[this.currentIndex].categoryDetail[type]=res;
+          // console.log(this.categoryDetail[this.currentIndex].categoryDetail[type])
+          this.categoryDetail={...this.categoryData}
+          console.log(categoryDetail)
+        })
+      },
+      selectItem(index){
+        this._getSubcategory(index)
+      },
+      tabclick(index){
+        switch(index){
+          case 0:
+            this.currentType='pop';
+            break;
+          case 1:
+            this.currentType='new';
+            break;
+          case 2:
+            this.currentType='sell'  
+        }
+      }
+    }
   }
+
 </script>
 
 <style scoped>
-ul{
-  height: 300px;
-  background: #f00;
-  overflow-y:scroll
-}
+  .tab-control{
+    font-size: 14px;
+  }
+  .nav-bar{
+    background-color: var(--color-tint);
+    color: #fff;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  #category{
+    height: 100vh;
+  }
+   .content{
+   
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 44px;
+    bottom: 49px;
+
+    display: flex;
+  }
+  .wrapper{
+    height: 100%;
+    flex: 1;
+  }
+ 
 </style>
