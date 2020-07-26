@@ -43,13 +43,10 @@ import Scroll from 'components/common/scroll/Scroll'
 </script>
 
 <style scoped>
-  .category-list{
-    height: 100vh;
-   
-  }
+ 
   .scroll{
-    height:calc(100% - 44px - 49px );
-     width: 100px;
+    height:100%;
+    width: 100px;
     box-sizing: border-box;
     font-size: 14px;
     text-align: center;

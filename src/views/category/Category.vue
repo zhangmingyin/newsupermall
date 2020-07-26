@@ -3,7 +3,7 @@
     <nav-bar class="nav-bar"><div slot="center">商品分类</div></nav-bar>
     <div class="content">
       <left-info :left-info="categorys" @selectItem="selectItem"></left-info>
-      <scroll class="wrapper" ref="scroll">
+      <scroll id="wrapper" ref="scroll">
         <tab-content-category :subcategories="showSubcategory"></tab-content-category>
         <tab-control 
         class="tab-control" 
@@ -55,6 +55,9 @@
 		    if (this.currentIndex === -1) return {}
         return this.categoryData[this.currentIndex].subcategories
       },
+    },
+    activated(){
+      this.$refs.scroll.refresh()
     },
     methods:{
       _getCategory(){
@@ -118,6 +121,9 @@
 </script>
 
 <style scoped>
+   #category{
+    height: 100vh;
+  }
   .tab-control{
     font-size: 14px;
   }
@@ -127,9 +133,6 @@
     text-align: center;
     position: relative;
     z-index: 1;
-  }
-  #category{
-    height: 100vh;
   }
    .content{
    
@@ -141,7 +144,7 @@
 
     display: flex;
   }
-  .wrapper{
+  #wrapper{
     height: 100%;
     flex: 1;
   }
